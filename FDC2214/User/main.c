@@ -10,19 +10,23 @@
 #include "FDC2214.h"
 #include "time.h"
 #include "shoushi.h"
+#include "usart1.h"
 
-int mod = 1;
+u8 mod = 1;
 int flag_s = 0;
-int flag_s1 = 0;
-int flag_s2 = 0;
-char flag_e = 0;
-char flag_e1 = 0;
+u8 flag_s1 = 0;
+u8 flag_s2 = 0;
+u8 flag_e = 0;
+u8 flag_e1 = 0;
 int max123 = 1895, min123 = 1618;
 int max12345 = 1899, min12345 = 1690;
 int max0[3], min0[3];
 int mid0[3] = {1626, 1746, 1891};
 int max[5], min[5];
 int mid[5] = {1702, 1749, 1787, 1836, 1895};
+
+#define OLED_ShowString(a,b,c,d)      (printf(c))
+#define OLED_ShowChar(a,b,c,d,e)      (printf("%c\r\n",c))
 
 int main()
 {
@@ -32,18 +36,22 @@ int main()
     SysTick_Init(72);
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);  //中断优先级分组 分2组
     LED_Init();
-//      LED_Init1();
+
     KEY_Init();
-//      FDC2214_Init();
+    //FDC2214_Init();
     TIM4_Init(10000, 7200 - 1);
     TIM3_Init(1000, 360 - 1);
-    OLED_Init();
+    //OLED_Init();
 
+    /* wait interrupt */
+    /* USART1 config 115200 8-N-1 */
+    USART1_Config();
+    NVIC_Configuration();
+
+    printf("uart is init\r\n");
 
     while (1)
     {
-
-
         OLED_ShowString(0, 10, "mode:", 12);
         OLED_ShowChar(30, 10, mod + 48, 12, 1);
         if (mod == 1)
@@ -63,8 +71,6 @@ int main()
             OLED_ShowString(60, 10, "judge2", 12);
         }
         OLED_Refresh_Gram();
-
-
 
         if (mod == 1)
         {
@@ -104,10 +110,6 @@ int main()
                     {
                         OLED_ShowString(0, 45, "Success!", 12);
                     }
-
-
-
-
                 }
             }
             flag_s = 0;
