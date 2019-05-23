@@ -12,7 +12,7 @@
 #include "shoushi.h"
 #include "usart1.h"
 
-u8 mod = 1;
+u8 mod = 2;
 int flag_s = 0;
 u8 flag_s1 = 0;
 u8 flag_s2 = 0;
@@ -38,7 +38,7 @@ int main()
     LED_Init();
 
     KEY_Init();
-    //FDC2214_Init();
+    FDC2214_Init();
     TIM4_Init(10000, 7200 - 1);
     TIM3_Init(1000, 360 - 1);
     //OLED_Init();
@@ -118,7 +118,7 @@ int main()
         else if (mod == 2)
         {
 
-            if (flag_s == 1)
+            if (1)//(flag_s == 1)
             {
                 flag_p = zuizhongpanduan();
                 if (flag_p != 0)
