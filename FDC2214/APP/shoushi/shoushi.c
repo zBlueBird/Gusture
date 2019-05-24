@@ -1,7 +1,7 @@
 #include "shoushi.h"
 #include "FDC2214.h"
 #include "time.h"
-#include "oled.h"
+//#include "oled.h"
 #include "math.h"
 #include "SysTick.h"
 extern int flag_10s;
@@ -26,9 +26,6 @@ void xunlian1()
 
     while (flag_10s)
     {
-
-
-
         t1 = dianrongzhi(0);
         if (f == 0)
         {
@@ -39,7 +36,6 @@ void xunlian1()
         }
 
 
-
         if (m1 < t1)
         {
             m1 = t1;
@@ -48,8 +44,6 @@ void xunlian1()
         {
             m2 = t1;
         }
-
-
 
         sum = (sum + t1) / 2;
 
@@ -351,14 +345,6 @@ int panduan2(int t2)
     return in + 1;
 
 }
-
-
-
-
-
-
-
-
 
 
 int zuizhongpanduan()

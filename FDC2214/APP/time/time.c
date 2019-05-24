@@ -1,7 +1,7 @@
 #include "time.h"
 #include "key.h"
 
-
+extern key_msg_dat g_key_data;
 int flag_10s = 1;
 int i = 0;
 
@@ -34,7 +34,7 @@ void TIM3_Init(u16 per, u16 psc)
     NVIC_InitStructure.NVIC_IRQChannelCmd = ENABLE;         //IRQ通道使能
     NVIC_Init(&NVIC_InitStructure);
 
-    TIM_Cmd(TIM3, ENABLE); //使能定时器
+    //TIM_Cmd(TIM3, ENABLE); //使能定时器
 }
 void TIM4_Init(u16 per, u16 psc)
 {
@@ -72,10 +72,8 @@ void TIM3_IRQHandler(void)
 {
     if (TIM_GetITStatus(TIM3, TIM_IT_Update))
     {
-
-
-        KEY_Scan();
-
+        g_key_data.key_flag = 1;
+        g_key_data.key_value = get_key_value();
     }
     TIM_ClearITPendingBit(TIM3, TIM_IT_Update);
 
