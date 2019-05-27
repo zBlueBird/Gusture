@@ -172,15 +172,15 @@ int dianrongzhi(int f1)
     date1 = FDC2214_GetResult(f1);
 
     fs = (date1 / 16);
-    printf("[FDC2214] CH0 value1 :%#f\r\n", fs);
+    //printf("[FDC2214] CH0 value1 :%#f\r\n", fs);
     fs = (fs / 256);
-    printf("[FDC2214] CH0 value2 :%#f\r\n", fs);
+    //printf("[FDC2214] CH0 value2 :%#f\r\n", fs);
     fs = (fs / 256);
-    printf("[FDC2214] CH0 value3 :%#f\r\n", fs);
+    //printf("[FDC2214] CH0 value3 :%#f\r\n", fs);
     fs = (fs / 256);
-    printf("[FDC2214] CH0 value4 :%#f\r\n", fs);
+    //printf("[FDC2214] CH0 value4 :%#f\r\n", fs);
     fs = 15000 * fs;
-    printf("[FDC2214] CH0 value5 :%#f\r\n", fs);
+    //printf("[FDC2214] CH0 value5 :%#f\r\n", fs);
     x = 2 * pi * fs;
     cs = 1000 / x;
     cs = cs * cs;
@@ -189,7 +189,7 @@ int dianrongzhi(int f1)
     cs = cs * k;
     cs = 1 / L + 1000 / x + 1000 / x - C;
     c = ((cs * 1000) - 160) * 100;
-    printf("[FDC2214] CH0 value :%d\r\n", c);
+    //printf("[FDC2214] CH0 value :%d\r\n", c);
     return c;
 
 

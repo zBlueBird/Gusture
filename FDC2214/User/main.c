@@ -9,9 +9,10 @@
 #include "time.h"
 #include "shoushi.h"
 #include "usart1.h"
-
+#include "usart2.h"
 
 key_msg_dat g_key_data = {0};
+gesture_data_stg g_data = {0};
 
 u8 mod = 2;
 int flag_s = 0;
@@ -31,25 +32,32 @@ int mid[5] = {1702, 1749, 1787, 1836, 1895};
 
 int main()
 {
-    int flag_p = 0;
-
     SysTick_Init(72);
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);  //中断优先级分组 分2组
 
     KEY_Init();
-    FDC2214_Init();
+    //FDC2214_Init();
     TIM4_Init(10000, 7200 - 1); //learn timeout timer, 10s
     TIM3_Init(30000, 360 - 1);//Debunce timer
 
     /* wait interrupt */
     /* USART1 config 115200 8-N-1 */
     USART1_Config();
-    NVIC_Configuration();
+    //NVIC_Configuration();
+
+    USART2_Config(115200);
 
     printf("[UART] uart is init\r\n");
+    USART2_printf(USART2, "\r\nuart2 is init\r\n");
+
+    /*输入指令*/
+    USART2_printf(USART2, GET_BUAD);
+    USART2_printf(USART2, GET_NAME);
+    USART2_printf(USART2, GET_ROLE);
 
     while (1)
     {
+
         if (g_key_data.key_flag)
         {
             //clear flag
@@ -62,69 +70,34 @@ int main()
                 printf(" <============ mode: %d\r\n", mod);
                 if (mod == 1)
                 {
-                    xunlian1();
-                    printf(" gesture: %d\r\n", flag_s1);
-
-                    if (flag_e1 == 1)
+                    g_data.flag ++;
+                    if (g_data.flag % 2 == 0)
                     {
-                        printf(" gesture: failed\r\n");
-                        flag_e1 = 0;
+                        printf(" Switch on Learn...\r\n");
+                        g_data.index[0] = 1;
+                        g_data.value[0] = dianrongzhi(0);
                     }
                     else
                     {
-                        printf(" gesture: success\r\n");
-                    }
-
-                    if (flag_s1 == 3)
-                    {
-                        fenlei1();
-                        error1();
-                        if (flag_e == 1)
-                        {
-                            printf(" gesture: failed.....\r\n");
-                            flag_e = 0;
-                        }
-                        else
-                        {
-                            printf(" gesture: success.....\r\n");
-                        }
+                        printf(" Switch off Learn...\r\n");
+                        g_data.index[1] = 2;
+                        g_data.value[1] = dianrongzhi(0);
                     }
                 }
                 else if (mod == 2)
                 {
-                    flag_p = zuizhongpanduan();
-                    if (flag_p != 0)
+                    uint16_t data = dianrongzhi(0);
+                    if ((data > g_data.value[0] - 25) && (data < g_data.value[0] + 25))
                     {
-                        OLED_ShowString(0, 35, "flag:", 12);
-                        if (flag_p == 1)
-                        {
-                            shitou = 1;
-                            jiandao = 0;
-                            bu = 0;
-                            OLED_ShowString(48, 35, "Shi Tou", 12);
-
-                        }
-                        else if (flag_p == 2)
-                        {
-                            shitou = 0;
-                            jiandao = 1;
-                            bu = 0;
-                            OLED_ShowString(48, 35, "Jian Dao", 12);
-                        }
-                        else if (flag_p == 3)
-                        {
-                            shitou = 0;
-                            jiandao = 0;
-                            bu = 1;
-                            OLED_ShowString(48, 35, "Bu", 12);
-                        }
+                        printf(" gesture: switch on\r\n");
+                    }
+                    else if ((data > g_data.value[1] - 25) && (data < g_data.value[1] + 25))
+                    {
+                        printf("gesture: switch off");
                     }
                     else
                     {
-                        printf(" gesture: can not distinguish\r\n");
-                        jiandao = 0;
-                        shitou = 0;
-                        bu = 0;
+                        printf(" gesture error");
                     }
                 }
             }
@@ -141,245 +114,6 @@ int main()
             }
         }
     }
-#if 0
-    {
-        OLED_ShowString(0, 10, "mode:", 12);
-        OLED_ShowChar(30, 10, mod + 48, 12, 1);
-        if (mod == 1)
-        {
-            OLED_ShowString(60, 10, "learn1", 12);
-        }
-        else if (mod == 2)
-        {
-            OLED_ShowString(60, 10, "judge1", 12);
-        }
-        else if (mod == 3)
-        {
-            OLED_ShowString(60, 10, "learn2", 12);
-        }
-        else if (mod == 4)
-        {
-            OLED_ShowString(60, 10, "judge2", 12);
-        }
-
-        if (mod == 1)
-        {
-            if (flag_s == 1)
-            {
-                OLED_ShowString(0, 10, "mode:", 12);
-                OLED_ShowChar(30, 10, mod + 48, 12, 1);
-                OLED_ShowString(60, 10, "learn1", 12);
-                xunlian1();
-                OLED_ShowString(0, 35, "gesture:", 12);
-                OLED_ShowChar(48, 35, flag_s1 + 48, 12, 1);
-
-                if (flag_e1 == 1)
-                {
-                    OLED_ShowString(60, 35, "error!!!", 12);
-                    flag_e1 = 0;
-                }
-                else
-                {
-                    OLED_ShowString(60, 35, "Finish!", 12);
-                }
-                if (flag_s1 == 3)
-                {
-                    fenlei1();
-                    error1();
-
-                    if (flag_e == 1)
-                    {
-
-                        OLED_ShowString(0, 45, "Fail!!!", 12);
-                        flag_e = 0;
-
-                    }
-                    else
-                    {
-                        OLED_ShowString(0, 45, "Success!", 12);
-                    }
-                }
-            }
-            flag_s = 0;
-        }
-
-        else if (mod == 2)
-        {
-
-            if (1)//(flag_s == 1)
-            {
-                flag_p = zuizhongpanduan();
-                if (flag_p != 0)
-                {
-                    OLED_ShowString(0, 35, "flag:", 12);
-                    if (flag_p == 1)
-                    {
-                        shitou = 1;
-                        jiandao = 0;
-                        bu = 0;
-                        OLED_ShowString(48, 35, "Shi Tou", 12);
-
-                    }
-                    else if (flag_p == 2)
-                    {
-                        shitou = 0;
-                        jiandao = 1;
-                        bu = 0;
-                        OLED_ShowString(48, 35, "Jian Dao", 12);
-                    }
-                    else if (flag_p == 3)
-                    {
-                        shitou = 0;
-                        jiandao = 0;
-                        bu = 1;
-                        OLED_ShowString(48, 35, "Bu", 12);
-                    }
-                }
-                else
-                {
-                    jiandao = 0;
-                    shitou = 0;
-                    bu = 0;
-                }
-            }
-            else
-            {
-                jiandao = 0;
-                shitou = 0;
-                bu = 0;
-
-            }
-
-
-        }
-
-        else if (mod == 3)
-        {
-
-            if (flag_s == 1)
-            {
-                OLED_ShowString(0, 10, "mode:", 12);
-                OLED_ShowChar(30, 10, mod + 48, 12, 1);
-                OLED_ShowString(60, 10, "learn2", 12);
-                xunlian2();
-                OLED_ShowString(0, 35, "gesture:", 12);
-                OLED_ShowChar(48, 35, flag_s2 + 48, 12, 1);
-
-                if (flag_e1 == 1)
-                {
-                    OLED_ShowString(60, 35, "error!!!", 12);
-                    flag_e1 = 0;
-                }
-                else
-                {
-                    OLED_ShowString(60, 35, "Finish!", 12);
-                }
-                if (flag_s2 == 5)
-                {
-
-                    fenlei2();
-                    error2();
-                    if (flag_e == 1)
-                    {
-
-                        OLED_ShowString(0, 45, "Fail!!!", 12);
-                        flag_e = 0;
-
-                    }
-                    else
-                    {
-                        OLED_ShowString(0, 45, "Success!", 12);
-                    }
-                }
-                flag_s = 0;
-            }
-        }
-
-        else if (mod == 4)
-        {
-
-            if (flag_s == 1)
-            {
-
-                flag_p = zuizhongpanduan1();
-
-                if (flag_p != 0)
-                {
-                    if (flag_p == 1)
-                    {
-                        nu1 = 1;
-                        nu2 = 0;
-                        nu3 = 0;
-                        nu4 = 0;
-                        nu5 = 0;
-
-                    }
-                    else if (flag_p == 2)
-                    {
-                        nu1 = 0;
-                        nu2 = 1;
-                        nu3 = 0;
-                        nu4 = 0;
-                        nu5 = 0;
-
-                    }
-                    else if (flag_p == 3)
-                    {
-                        nu1 = 0;
-                        nu2 = 0;
-                        nu3 = 1;
-                        nu4 = 0;
-                        nu5 = 0;
-
-                    }
-                    else if (flag_p == 4)
-                    {
-                        nu1 = 0;
-                        nu2 = 0;
-                        nu3 = 0;
-                        nu4 = 1;
-                        nu5 = 0;
-
-                    }
-                    else if (flag_p == 5)
-                    {
-                        nu1 = 0;
-                        nu2 = 0;
-                        nu3 = 0;
-                        nu4 = 0;
-                        nu5 = 1;
-
-                    }
-                    OLED_ShowString(0, 35, "flag:", 12);
-                    OLED_ShowChar(30, 35, flag_p + 48, 12, 1);
-                }
-                else
-                {
-                    nu1 = 0;
-                    nu2 = 0;
-                    nu3 = 0;
-                    nu4 = 0;
-                    nu5 = 0;
-                }
-            }
-            else
-            {
-
-                nu1 = 0;
-                nu2 = 0;
-                nu3 = 0;
-                nu4 = 0;
-                nu5 = 0;
-            }
-
-
-
-        }
-
-        i++;
-
-    }
-#endif
 }
 
 

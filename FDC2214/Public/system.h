@@ -66,5 +66,11 @@ typedef struct
     uint16_t key_value;
 } key_msg_dat;
 
+typedef struct
+{
+    uint8_t flag;
+    uint8_t index[2];
+    uint16_t value[2];
+} gesture_data_stg;
 
 #endif
