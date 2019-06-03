@@ -30,7 +30,7 @@ int mid[5] = {1702, 1749, 1787, 1836, 1895};
 #define OLED_ShowString(a,b,c,d)      //(printf(c))
 #define OLED_ShowChar(a,b,c,d,e)      //(printf("%c\r\n",c))
 
-uint8_t  cmd[1] = {0};
+uint8_t  cmd[3] = {0};
 
 int main()
 {
@@ -38,7 +38,7 @@ int main()
     NVIC_PriorityGroupConfig(NVIC_PriorityGroup_2);  //中断优先级分组 分2组
 
     KEY_Init();
-    //FDC2214_Init();
+    FDC2214_Init();
     TIM4_Init(10000, 7200 - 1); //learn timeout timer, 10s
     TIM3_Init(30000, 360 - 1);//Debunce timer
 
@@ -53,18 +53,18 @@ int main()
     USART2_printf(USART2, "\r\nuart2 is init\r\n");
 
     /*输入指令*/
-    delay_ms(2000);
-    USART2_printf(USART2, SET_ENADV);
-    delay_ms(1000);
-    //USART2_printf(USART2, GET_ROLE);
-    cmd[0] = 0x00;
-    USART2_printf(USART2, &cmd[0]);
+//    delay_ms(2000);
+//    USART2_printf(USART2, SET_ENADV);
+//    delay_ms(1000);
+//    //USART2_printf(USART2, GET_ROLE);
+//    cmd[0] = 0x00;
+//    USART2_printf(USART2, &cmd[0]);
 
     while (1)
     {
-        uart2_loop_proc();
-    }
-    {
+//        uart2_loop_proc();
+//    }
+//    {
         if (g_key_data.key_flag)
         {
             //clear flag
@@ -96,15 +96,32 @@ int main()
                     uint16_t data = dianrongzhi(0);
                     if ((data > g_data.value[0] - 25) && (data < g_data.value[0] + 25))
                     {
+											  uint8_t index = 0;
                         printf(" gesture: switch on\r\n");
                         cmd[0] = 0x01;
-                        USART2_printf(USART2, &cmd[0]);
+											  cmd[1] = 0x0D;
+											  cmd[2] = 0x0A;
+                        //USART2_printf(USART2, &cmd[0]);
+											  {
+											  for (index = 0; index < 3; index++)
+												{
+														USART_SendData(USART2, cmd[index]);
+														while (USART_GetFlagStatus(USART2, USART_FLAG_TC) != SET);
+												}
+											  }
                     }
                     else if ((data > g_data.value[1] - 25) && (data < g_data.value[1] + 25))
                     {
+											  uint8_t index = 0;
                         printf("gesture: switch off\r\n");
                         cmd[0] = 0x00;
-                        USART2_printf(USART2, &cmd[0]);
+											  cmd[1] = 0x0D;
+											  cmd[2] = 0x0A;
+											  for (index = 0; index < 3; index++)
+												{
+														USART_SendData(USART2, cmd[index]);
+														while (USART_GetFlagStatus(USART2, USART_FLAG_TC) != SET);
+												}
                     }
                     else
                     {
