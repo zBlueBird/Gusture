@@ -30,6 +30,8 @@ int mid[5] = {1702, 1749, 1787, 1836, 1895};
 #define OLED_ShowString(a,b,c,d)      //(printf(c))
 #define OLED_ShowChar(a,b,c,d,e)      //(printf("%c\r\n",c))
 
+uint8_t  cmd[1] = {0};
+
 int main()
 {
     SysTick_Init(72);
@@ -43,7 +45,7 @@ int main()
     /* wait interrupt */
     /* USART1 config 115200 8-N-1 */
     USART1_Config();
-    //NVIC_Configuration();
+    NVIC_Configuration();
 
     USART2_Config(115200);
 
@@ -51,13 +53,18 @@ int main()
     USART2_printf(USART2, "\r\nuart2 is init\r\n");
 
     /*ÊäÈëÖ¸Áî*/
-    USART2_printf(USART2, GET_BUAD);
-    USART2_printf(USART2, GET_NAME);
-    USART2_printf(USART2, GET_ROLE);
+    delay_ms(2000);
+    USART2_printf(USART2, SET_ENADV);
+    delay_ms(1000);
+    //USART2_printf(USART2, GET_ROLE);
+    cmd[0] = 0x00;
+    USART2_printf(USART2, &cmd[0]);
 
     while (1)
     {
-
+        uart2_loop_proc();
+    }
+    {
         if (g_key_data.key_flag)
         {
             //clear flag
@@ -90,10 +97,14 @@ int main()
                     if ((data > g_data.value[0] - 25) && (data < g_data.value[0] + 25))
                     {
                         printf(" gesture: switch on\r\n");
+                        cmd[0] = 0x01;
+                        USART2_printf(USART2, &cmd[0]);
                     }
                     else if ((data > g_data.value[1] - 25) && (data < g_data.value[1] + 25))
                     {
-                        printf("gesture: switch off");
+                        printf("gesture: switch off\r\n");
+                        cmd[0] = 0x00;
+                        USART2_printf(USART2, &cmd[0]);
                     }
                     else
                     {

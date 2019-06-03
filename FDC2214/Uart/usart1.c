@@ -5,11 +5,10 @@
 #include "stm32f10x.h"
 #include "stm32f10x_usart.h"
 
-u8 USART_RX_BUF[USART_REC_LEN];     //????,??USART_REC_LEN???.
+static u8 USART_RX_BUF[USART_REC_LEN];
+static u16 USART_RX_STA = 0;
 
-u16 USART_RX_STA = 0;     //??????
-
-void uart_loop_proc(void)
+void uart1_loop_proc(void)
 {
     u8 t;
     u8 len;
@@ -76,6 +75,10 @@ void USART1_IRQHandler(void)
     u8 Res;
     if (USART_GetITStatus(USART1, USART_IT_RXNE) != RESET)
     {
+#if 1
+        Res = USART_ReceiveData(USART1); // 串口2 接收
+        USART_SendData(USART2, Res);  // 串口1 发送
+#else
         Res = USART_ReceiveData(USART1); //(USART1->DR);  //????????
         if ((USART_RX_STA & 0x8000) == 0) //?????
         {
@@ -107,6 +110,7 @@ void USART1_IRQHandler(void)
                 }
             }
         }
+#endif
         USART_ClearITPendingBit(USART1, USART_IT_RXNE);
     }
 }

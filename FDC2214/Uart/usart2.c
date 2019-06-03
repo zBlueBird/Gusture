@@ -6,6 +6,30 @@
 
 #include "usart1.h"
 
+static uint8_t USART2_RX_BUF[USART2_REC_LEN];
+static uint16_t  USART2_RX_STA = 0;
+
+void uart2_loop_proc(void)
+{
+    uint8_t t;
+    uint8_t len;
+    if (USART2_RX_STA & 0x8000)
+    {
+        len = USART2_RX_STA & 0x3f;
+        printf("uart2 receive data from ble\r\n");
+#if 1
+
+        /*send through uart1*/
+        for (t = 0; t < len; t++)
+        {
+            USART_SendData(USART1, USART2_RX_BUF[t]);
+            while (USART_GetFlagStatus(USART1, USART_FLAG_TC) != SET);
+        }
+#endif
+        USART2_RX_STA = 0;
+    }
+}
+
 void USART2_Config(u32 My_BaudRate)
 {
     GPIO_InitTypeDef GPIO_InitStrue;
@@ -49,11 +73,44 @@ void USART2_Config(u32 My_BaudRate)
 
 void USART2_IRQHandler(void) // 串口2中断服务函数
 {
-    u8 res;
+    uint8_t res;
     if (USART_GetITStatus(USART2, USART_IT_RXNE)) // 中断标志
     {
         res = USART_ReceiveData(USART2); // 串口2 接收
-        USART_SendData(USART1, res);  // 串口1 发送
+        //USART_SendData(USART1, res);  // 串口1 发送
+#if 1
+        //res = USART_ReceiveData(USART1); //(USART1->DR);  //????????
+        if ((USART2_RX_STA & 0x8000) == 0)
+        {
+            if (USART2_RX_STA & 0x4000)
+            {
+                if (res != 0x0a)
+                {
+                    USART2_RX_STA = 0;
+                }
+                else
+                {
+                    USART2_RX_STA |= 0x8000;
+                }
+            }
+            else //0X0D
+            {
+                if (res == 0x0d)
+                {
+                    USART2_RX_STA |= 0x4000;
+                }
+                else
+                {
+                    USART2_RX_BUF[USART2_RX_STA & 0X3FFF] = res ;
+                    USART2_RX_STA++;
+                    if (USART2_RX_STA > (USART_REC_LEN - 1))
+                    {
+                        USART2_RX_STA = 0;//reset length 0
+                    }
+                }
+            }
+        }
+#endif
     }
 
 }
