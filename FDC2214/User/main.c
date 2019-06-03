@@ -50,21 +50,12 @@ int main()
     USART2_Config(115200);
 
     printf("[UART] uart is init\r\n");
-    USART2_printf(USART2, "\r\nuart2 is init\r\n");
+    //USART2_printf(USART2, "\r\nuart2 is init\r\n");
 
     /*ÊäÈëÖ¸Áî*/
-//    delay_ms(2000);
-//    USART2_printf(USART2, SET_ENADV);
-//    delay_ms(1000);
-//    //USART2_printf(USART2, GET_ROLE);
-//    cmd[0] = 0x00;
-//    USART2_printf(USART2, &cmd[0]);
 
     while (1)
     {
-//        uart2_loop_proc();
-//    }
-//    {
         if (g_key_data.key_flag)
         {
             //clear flag
@@ -96,32 +87,32 @@ int main()
                     uint16_t data = dianrongzhi(0);
                     if ((data > g_data.value[0] - 25) && (data < g_data.value[0] + 25))
                     {
-											  uint8_t index = 0;
+                        uint8_t index = 0;
                         printf(" gesture: switch on\r\n");
                         cmd[0] = 0x01;
-											  cmd[1] = 0x0D;
-											  cmd[2] = 0x0A;
+                        cmd[1] = 0x0D;
+                        cmd[2] = 0x0A;
                         //USART2_printf(USART2, &cmd[0]);
-											  {
-											  for (index = 0; index < 3; index++)
-												{
-														USART_SendData(USART2, cmd[index]);
-														while (USART_GetFlagStatus(USART2, USART_FLAG_TC) != SET);
-												}
-											  }
+                        {
+                            for (index = 0; index < 3; index++)
+                            {
+                                USART_SendData(USART2, cmd[index]);
+                                while (USART_GetFlagStatus(USART2, USART_FLAG_TC) != SET);
+                            }
+                        }
                     }
                     else if ((data > g_data.value[1] - 25) && (data < g_data.value[1] + 25))
                     {
-											  uint8_t index = 0;
+                        uint8_t index = 0;
                         printf("gesture: switch off\r\n");
                         cmd[0] = 0x00;
-											  cmd[1] = 0x0D;
-											  cmd[2] = 0x0A;
-											  for (index = 0; index < 3; index++)
-												{
-														USART_SendData(USART2, cmd[index]);
-														while (USART_GetFlagStatus(USART2, USART_FLAG_TC) != SET);
-												}
+                        cmd[1] = 0x0D;
+                        cmd[2] = 0x0A;
+                        for (index = 0; index < 3; index++)
+                        {
+                            USART_SendData(USART2, cmd[index]);
+                            while (USART_GetFlagStatus(USART2, USART_FLAG_TC) != SET);
+                        }
                     }
                     else
                     {

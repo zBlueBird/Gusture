@@ -77,7 +77,8 @@ void USART1_IRQHandler(void)
     {
 #if 1
         Res = USART_ReceiveData(USART1); // 串口2 接收
-        USART_SendData(USART2, Res);  // 串口1 发送
+        //USART_SendData(USART2, Res);  // 串口1 发送
+        Res = (u8)Res;
 #else
         Res = USART_ReceiveData(USART1); //(USART1->DR);  //????????
         if ((USART_RX_STA & 0x8000) == 0) //?????
