@@ -1,0 +1,19 @@
+#Internal package file, do not edit.
+#Tue Jun 04 15:29:31 CST 2019
+1.base=F\:\\homework\\android\\Weather1\\app\\build\\intermediates\\merged_assets\\debug\\mergeDebugAssets\\out
+2.path=fonts/Helvetica_Neue_CE_35_Thin.ttf
+0.baseType=DIRECTORY
+3.baseType=DIRECTORY
+2.base=F\:\\homework\\android\\Weather1\\app\\build\\intermediates\\merged_assets\\debug\\mergeDebugAssets\\out
+3.set=ASSET
+2.set=ASSET
+1.baseType=DIRECTORY
+3.path=fonts/Helvetica_LT33ThinExtendedOblique.ttf
+count=4
+1.set=ASSET
+0.path=fonts/Helvetica_Neue_CE_36_Thin_Italic.ttf
+3.base=F\:\\homework\\android\\Weather1\\app\\build\\intermediates\\merged_assets\\debug\\mergeDebugAssets\\out
+0.set=ASSET
+0.base=F\:\\homework\\android\\Weather1\\app\\build\\intermediates\\merged_assets\\debug\\mergeDebugAssets\\out
+2.baseType=DIRECTORY
+1.path=fonts/Helvetica_LT_35_Thin.ttf

@@ -47,7 +47,7 @@ int main()
     USART1_Config();
     NVIC_Configuration();
 
-    USART2_Config(115200);
+    USART2_Config(9600);
 
     printf("[UART] uart is init\r\n");
     //USART2_printf(USART2, "\r\nuart2 is init\r\n");
@@ -85,7 +85,39 @@ int main()
                 else if (mod == 2)
                 {
                     uint16_t data = dianrongzhi(0);
-                    if ((data > g_data.value[0] - 25) && (data < g_data.value[0] + 25))
+                    uint8_t flag = 0;
+
+                    printf(" gesture: switch on, value = %x, value[0] = %x, value[1]=%x\r\n",
+                           data, g_data.value[0], g_data.value[1]);
+
+                    if (g_data.value[0] < g_data.value[1])
+                    {
+                        uint16_t mid_data = (g_data.value[0] + g_data.value[1]) / 2;
+                        if ((data > (g_data.value[0] - 100)) && (data < mid_data))
+                        {
+                            //switch on
+                            flag = 1;
+                        }
+                        else if ((data < (g_data.value[1] + 100)) && (data > mid_data))
+                        {
+                            flag = 2;//switch off
+                        }
+                    }
+                    else if (g_data.value[1] < g_data.value[0])
+                    {
+                        uint16_t mid_data = (g_data.value[0] + g_data.value[1]) / 2;
+                        if ((data > (g_data.value[1] - 100)) && (data < mid_data))
+                        {
+                            //switch off
+                            flag = 2;
+                        }
+                        else if ((data < (g_data.value[0] + 100)) && (data > mid_data))
+                        {
+                            flag = 1;//switch on
+                        }
+                    }
+
+                    if (1 == flag)
                     {
                         uint8_t index = 0;
                         printf(" gesture: switch on\r\n");
@@ -101,7 +133,7 @@ int main()
                             }
                         }
                     }
-                    else if ((data > g_data.value[1] - 25) && (data < g_data.value[1] + 25))
+                    else if (2 == flag)
                     {
                         uint8_t index = 0;
                         printf("gesture: switch off\r\n");

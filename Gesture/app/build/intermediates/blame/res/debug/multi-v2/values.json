@@ -1,0 +1,57 @@
+{
+    "logs": [
+        {
+            "outputFile": "F:\\homework\\android\\Weather1\\app\\build\\intermediates\\incremental\\mergeDebugResources\\merged.dir\\values\\values.xml",
+            "map": [
+                {
+                    "source": "F:\\homework\\android\\Weather1\\app\\src\\main\\res\\values\\styles.xml",
+                    "from": {
+                        "startLines": "-1,-1,-1,-1",
+                        "startColumns": "-1,-1,-1,-1",
+                        "startOffsets": "-1,-1,-1,-1"
+                    },
+                    "to": {
+                        "startLines": "21,24,27,30",
+                        "startColumns": "4,4,4,4",
+                        "startOffsets": "1107,1190,1262,1424",
+                        "endLines": "23,26,29,32",
+                        "endColumns": "12,12,12,12",
+                        "endOffsets": "1185,1257,1419,1582"
+                    }
+                },
+                {
+                    "source": "F:\\homework\\android\\Weather1\\app\\src\\main\\res\\values\\strings.xml",
+                    "from": {
+                        "startLines": "3,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1",
+                        "startColumns": "4,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1",
+                        "startOffsets": "56,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1",
+                        "endColumns": "44,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1",
+                        "endOffsets": "96,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1,-1"
+                    },
+                    "to": {
+                        "startLines": "4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20",
+                        "startColumns": "4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4,4",
+                        "startOffsets": "169,214,281,329,383,466,511,576,623,672,727,770,813,857,915,989,1047",
+                        "endColumns": "44,66,47,53,82,44,64,46,48,54,42,42,43,57,73,57,59",
+                        "endOffsets": "209,276,324,378,461,506,571,618,667,722,765,808,852,910,984,1042,1102"
+                    }
+                },
+                {
+                    "source": "F:\\homework\\android\\Weather1\\app\\src\\main\\res\\values\\dimens.xml",
+                    "from": {
+                        "startLines": "-1,-1",
+                        "startColumns": "-1,-1",
+                        "startOffsets": "-1,-1"
+                    },
+                    "to": {
+                        "startLines": "2,3",
+                        "startColumns": "4,4",
+                        "startOffsets": "55,113",
+                        "endColumns": "57,55",
+                        "endOffsets": "108,164"
+                    }
+                }
+            ]
+        }
+    ]
+}
